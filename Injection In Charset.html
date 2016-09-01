@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Injection In Charset</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">lili_blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/category.html">Category</a></li>
+                    <li><a href="/category/ctf-web.html">CTF web</a></li>
+                    <li class="active"><a href="/category/injection.html">InJection</a></li>
+                    <li><a href="/category/web.html">web</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/Injection In Charset.html" rel="bookmark"
+           title="Permalink to Injection In Charset">Injection In Charset</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-09-21T20:06:00+02:00">
+                Published: 一 21 九月 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/xukaiyi.html">Xukaiyi</a>
+        </address>
+<p>In <a href="/category/injection.html">InJection</a>.</p>
+<p>tags: <a href="/tag/charset.html">Charset</a> <a href="/tag/sql-injection.html">SQL Injection</a> </p>
+</footer><!-- /.post-info -->      <h3>INJECTION IN CHARSET</h3>
+<h4>GBK,UTF-8 and ASSIC</h4>
+<ol>
+<li>
+<p>In the whole process, Mysql will transform the charset by the value of <strong>character_set_results</strong> ;</p>
+</li>
+<li>
+<p>and if the charset of the mysql database is GBK which must use two bytes and the char %df needs to eat the char after it, and if the char after it is a "\" or "'" then an escape may happened;</p>
+</li>
+<li>
+<p>In php ; there are many kinds of function to avoid escape of a value like <strong>addslashes，mysql_real_escape_string，mysql_escape_string and magic_quote_gpc</strong></p>
+</li>
+<li>
+<p>and there are two functions which can be used to set charset:<br />
+<strong>mysql_set_charset("gbk")</strong> and <strong>mysql_query("set names gbk")</strong></p>
+</li>
+</ol>
+<h4>POC</h4>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="nv">$con</span> <span class="o">=</span> <span class="nb">mysql_connect</span><span class="p">(</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;root&quot;</span><span class="p">,</span> <span class="s2">&quot;xky&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nv">$con</span><span class="p">)</span> <span class="k">die</span> <span class="p">(</span><span class="s2">&quot;CON DIE!&quot;</span><span class="p">);</span>
+<span class="nb">mysql_select_db</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="nv">$con</span><span class="p">);</span>
+
+<span class="nb">mysql_set_charset</span><span class="p">(</span><span class="s2">&quot;gbk&quot;</span><span class="p">);</span>       <span class="c1">#recommanded</span>
+<span class="c1">#mysql_query(&quot;set names gbk&quot;);  #unsafe</span>
+<span class="nv">$res</span> <span class="o">=</span> <span class="nb">mysql_query</span><span class="p">(</span><span class="s2">&quot;show variables like &#39;character%&#39;;&quot;</span><span class="p">);</span>
+<span class="k">while</span><span class="p">(</span><span class="nv">$row</span> <span class="o">=</span> <span class="nb">mysql_fetch_row</span><span class="p">(</span><span class="nv">$res</span><span class="p">)){</span>
+    <span class="nb">var_dump</span><span class="p">(</span><span class="nv">$row</span><span class="p">);</span>
+    <span class="k">echo</span> <span class="s2">&quot;&lt;br&gt;&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">echo</span> <span class="s2">&quot;&lt;br /&gt;&quot;</span><span class="p">;</span>
+
+<span class="nv">$name</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">];</span>
+<span class="nv">$sql</span> <span class="o">=</span> <span class="s2">&quot;select * from tablename where name = &#39;&quot;</span><span class="o">.</span> <span class="nb">mysql_real_escape_string</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span><span class="o">.</span><span class="s2">&quot;&#39;&quot;</span><span class="p">;</span>
+
+<span class="k">echo</span> <span class="nv">$sql</span><span class="o">.</span><span class="s2">&quot;&lt;br&gt;&quot;</span><span class="p">;</span>
+<span class="nv">$res</span> <span class="o">=</span> <span class="nb">mysql_query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+<span class="k">while</span><span class="p">(</span><span class="nv">$row</span> <span class="o">=</span> <span class="nb">mysql_fetch_row</span><span class="p">(</span><span class="nv">$res</span><span class="p">)){</span>
+    <span class="nb">var_dump</span><span class="p">(</span><span class="nv">$row</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">#url:</span>
+<span class="c1">#http://127.0.0.1/double-encode-sqli/vul2.php?name=aaa%bf%27%20or%201=1%23</span>
+</pre></div>
+
+
+<h4>EXP</h4>
+<h4>CONLUSION</h4>
+<ol>
+<li>When use unsafe <strong>mysql_query("set names gbk")</strong> all is unsafe whatever unescape functiones used;</li>
+<li>When use recommaneded <strong>mysql_set_charset("gbk")</strong> and <strong>mysql_real_escape_string</strong>, an slash will be added to %bf and escape failed;</li>
+</ol>
+<h4>INJECTION IN PDO</h4>
+<ol>
+<li>
+<p>IN PDO, there are prepare and execute function which will be used to avoid the possibility of SQL Injection, But if the Charset function is not used correctly, escape will also happen;</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="nv">$dbh</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PDO</span><span class="p">(</span><span class="s1">&#39;mysql:host=localhost;dbname=test;charset=gbk&#39;</span><span class="p">,</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;xky&#39;</span><span class="p">);</span>  
+<span class="nv">$dbh</span> <span class="o">-&gt;</span> <span class="na">setAttribute</span><span class="p">(</span><span class="nx">PDO</span><span class="o">::</span><span class="na">ATTR_ERRMODE</span><span class="p">,</span> <span class="nx">PDO</span><span class="o">::</span><span class="na">ERRMODE_EXCEPTION</span><span class="p">);</span>
+
+<span class="c1">#$dbh -&gt; query(&quot;SET NAMES &#39;GBK&#39;&quot;); #UNSAFE</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">@</span><span class="nv">$name</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$dbh</span> <span class="o">-&gt;</span> <span class="na">quote</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
+    <span class="nb">var_dump</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
+    <span class="nv">$sql</span> <span class="o">=</span> <span class="s2">&quot;Select id, name from tablename where name = </span><span class="si">{</span><span class="nv">$name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="k">echo</span> <span class="nv">$sql</span><span class="o">.</span><span class="s2">&quot;&lt;br /&gt;&quot;</span><span class="p">;</span>
+
+    <span class="k">foreach</span><span class="p">(</span><span class="nv">$dbh</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$row</span><span class="p">){</span>
+        <span class="nb">var_dump</span><span class="p">(</span><span class="nv">$row</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="cm">/*</span>
+<span class="cm">    $req = $dbh-&gt;prepare($sql);</span>
+<span class="cm">    $req -&gt; execute( Array($name ) );</span>
+<span class="cm">    $res = $req-&gt;fetchAll();</span>
+<span class="cm">    var_dump($res);</span>
+<span class="cm">         */</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+<span class="err">#</span><span class="nx">url</span>
+<span class="err">#</span><span class="nx">http</span><span class="o">:</span><span class="c1">//127.0.0.1/double-encode-sqli/pdo.php?name=xukaiyi%bf%27%20or%201=1%23</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>If you set charset in the new PDO initlize,it is OK; But when use query to set names gbk ,it is dangerous</p>
+</li>
+<li>
+<p>Even use function prepare and execute, it doesn't work any more~; </p>
+</li>
+</ol>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

