@@ -1,123 +1,217 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+        <meta charset="utf-8" />
+        <title>lili_blog</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
 
-    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
-
-  <link rel="stylesheet" type="text/css" href="/theme/pygments/github.min.css">
-  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/font-awesome.min.css">
-
-
-
-
-
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
-
-
-    <meta name="author" content="lili" />
-    <meta name="description" content="" />
-<meta property="og:site_name" content="lili_blog"/>
-<meta property="og:type" content="blog"/>
-<meta property="og:title" content="lili_blog"/>
-<meta property="og:description" content=""/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content=""/>
-
-  <title>lili_blog</title>
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
-<body>
-  <aside>
-    <div>
-      <a href="">
-        <img src="/theme/img/profile.png" alt="" title="">
-      </a>
-      <h1><a href=""></a></h1>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">lili_blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/category.html">Category</a></li>
+                    <li><a href="/category/misc.html">misc</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/python.html">Python</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-09-01T19:16:03+02:00">
+                Published: 四 01 九月 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/lili.html">Lili</a>
+        </address>
+<p>In <a href="/category/misc.html">misc</a>.</p>
+
+</footer><!-- /.post-info --><h1>lili的python使用指南</h1>
+<h2>中文支持</h2>
+<div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*- </span>
+<span class="kn">import</span> <span class="nn">sys</span> 
+<span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span> 
+<span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> 
+<span class="c1">#或者：</span>
+<span class="c1">#!/usr/bin/env python</span>
+<span class="c1"># encoding: utf-8</span>
+</pre></div>
 
 
-      <nav>
-        <ul class="list">
-
-          <li><a href="http://getpelican.com/" target="_blank">Pelican</a></li>
-          <li><a href="http://python.org/" target="_blank">Python.org</a></li>
-          <li><a href="http://jinja.pocoo.org/" target="_blank">Jinja2</a></li>
-          <li><a href="#" target="_blank">You can modify those links in your config file</a></li>
-        </ul>
-      </nav>
-
-      <ul class="social">
-        <li><a class="sc-You can add links in your config file" href="#" target="_blank"><i class="fa fa-You can add links in your config file"></i></a></li>
-        <li><a class="sc-Another social link" href="#" target="_blank"><i class="fa fa-Another social link"></i></a></li>
-      </ul>
-    </div>
-  </aside>
-  <main>
-
-<article>
-  <header>
-    <h2><a href="/python.html#python">Python</a></h2>
-    <p>
-          Posted on 四 01 九月 2016 in <a href="/category/misc.html">misc</a>
+<h2>pipreqs</h2>
+<p>生成requirement.txt</p>
+<p><code>pipreqs ./</code></p>
+<h2>异常处理</h2>
+<p>将异常写文件</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">traceback</span>
+<span class="k">try</span><span class="p">:</span>  
+    <span class="o">...</span>
+<span class="k">except</span><span class="p">:</span>  
+    <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;log.txt&quot;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>  
+    <span class="k">print</span> <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>  
+    <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>  
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
 
 
-
-    </p>
-  </header>
-  <div>
-      
-      <br>
-      <a class="btn" href="/python.html#python">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="/Slug.html#Slug">lili test</a></h2>
-    <p>
-          Posted on 一 05 十月 2015 in <a href="/category/category.html">Category</a>
+<h2>pyquery的使用</h2>
+<p>注意字符串是不能调用pq的函数的，必须pq(str)</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyquery</span>
+<span class="n">h</span><span class="o">=</span><span class="n">pq</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+<span class="c1">#html可以是字符串、url链接</span>
+<span class="n">forms</span><span class="o">=</span><span class="n">h</span><span class="p">(</span><span class="s2">&quot;form&quot;</span><span class="p">)</span>
+<span class="c1">#forms是字符串的list，提取出了所有form</span>
+<span class="k">for</span> <span class="n">form</span> <span class="ow">in</span> <span class="n">forms</span><span class="p">:</span>
+    <span class="n">pq</span><span class="p">(</span><span class="n">form</span><span class="p">)</span><span class="o">.</span><span class="n">html</span><span class="p">()</span>
+    <span class="c1">#.html()有&lt;div&gt;,.text()为纯内容</span>
+</pre></div>
 
 
-          &#8226;     Tagged with
-
-              <a href="/tag/tags.html">Tags</a>
-    </p>
-  </header>
-  <div>
-      <p>Summary</p>
-      <br>
-      <a class="btn" href="/Slug.html#Slug">    Continue reading
-</a>
-  </div>
-</article>
-
-  <div class="pagination">
-  </div>
-
-    <footer>
-<p>&copy; lili </p>
-<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
-</p>    </footer>
-  </main>
+<h2>urlparse的使用</h2>
+<p>分解url利器！</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">urlparse</span>
+<span class="n">url</span><span class="o">=</span><span class="n">urlparse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="s1">&#39;http://www.baidu.com/index.php?username=guol&#39;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">url</span>
+<span class="n">ParseResult</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="s1">&#39;http&#39;</span><span class="p">,</span> <span class="n">netloc</span><span class="o">=</span><span class="s1">&#39;www.baidu.com&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/index.php&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="s1">&#39;username=guol&#39;</span><span class="p">,</span> <span class="n">fragment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
 
 
+<h2>xpath</h2>
+<p>//  任意目录；@href 取属性值；但是各种路径觉得略难用</p>
+<div class="highlight"><pre><span></span><span class="n">n</span><span class="o">=</span><span class="n">Selector</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">_html</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//a/@href&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+</pre></div>
 
 
+<h2>time</h2>
+<p>获取当前时间</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">def</span> <span class="nf">timestamp</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">()))</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</pre></div>
 
-<script type="application/ld+json">
-{
-  "@context" : "http://schema.org",
-  "@type" : "Blog",
-  "name": " lili_blog ",
-  "url" : "",
-  "image": "",
-  "description": ""
-}
-</script>
+
+<h2>split</h2>
+<ul>
+<li>分割:split()不加内容则是用空格分割。加内容则是以内容作为分隔符</li>
+</ul>
+<div class="highlight"><pre><span></span>    <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+
+<h2>strip()</h2>
+<p>只能删除开头和末尾的空格,\t\n这种，中间不能删，但是已经很有用了</p>
+<div class="highlight"><pre><span></span>a.strip()
+</pre></div>
+
+
+<h2>sys.argv[1]</h2>
+<div class="highlight"><pre><span></span>    <span class="c1">#读取python 命令行中的第2个</span>
+    <span class="c1">#例如 python a.py aaa,则inject=aaa</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="n">inject</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+
+<h2>dict,enumerate</h2>
+<div class="highlight"><pre><span></span><span class="c1">#enumerate 函数用于遍历序列中的元素以及它们的下标</span>
+<span class="c1">#dict 字典</span>
+<span class="n">crypt</span> <span class="o">=</span> <span class="s2">&quot;YLyA83tfONHDInmSc7JCb64PBxQaZTRu.viMWj9lhzgwGdeqEV25Kos1Fkp0/Xr&quot;</span>
+<span class="n">plain</span> <span class="o">=</span> <span class="s2">&quot;.0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;</span>
+
+<span class="n">mapping</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plain</span><span class="p">):</span>
+    <span class="n">mapping</span><span class="p">[</span><span class="n">crypt</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span> <span class="o">=</span> <span class="n">p</span>
+</pre></div>
+
+
+<h2>googleapi</h2>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">googleapiclient.discovery</span> <span class="kn">import</span> <span class="n">build</span>
+
+<span class="n">developerKey</span> <span class="o">=</span> <span class="s2">&quot;AIzaSyBsNYYWBhdrtsE_2CbsV9fafWGsiK4N4vQ&quot;</span>
+<span class="n">cx</span> <span class="o">=</span> <span class="s1">&#39;009745370783905360412:gpp6azmieg4&#39;</span>
+
+<span class="k">def</span> <span class="nf">google_results</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">siteSearch</span><span class="p">,</span> <span class="n">start</span><span class="p">):</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="s2">&quot;customsearch&quot;</span><span class="p">,</span> <span class="s2">&quot;v1&quot;</span><span class="p">,</span>
+                    <span class="n">developerKey</span><span class="o">=</span><span class="n">developerKey</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">cse</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
+            <span class="n">q</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+            <span class="n">cx</span><span class="o">=</span><span class="n">cx</span><span class="p">,</span>
+            <span class="nb">filter</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span>
+            <span class="n">siteSearch</span><span class="o">=</span><span class="n">siteSearch</span><span class="p">,</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;[*] Connect fail&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/Slug.html" rel="bookmark"
+                           title="Permalink to lili test">lili test</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-10-05T10:28:00+02:00">
+                Published: 一 05 十月 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/lili.html">lili</a>
+        </address>
+<p>In <a href="/category/category.html">Category</a>.</p>
+<p>tags: <a href="/tag/tags.html">Tags</a> </p>
+</footer><!-- /.post-info -->                <p>Summary</p>
+                <a class="readmore" href="/Slug.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
 </body>
 </html>
