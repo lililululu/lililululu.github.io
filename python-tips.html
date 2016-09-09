@@ -111,14 +111,14 @@
 			</ul>
 		</header>
 
-		<h2>中文支持</h2>
-<div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*- </span>
+		<h2>中文注释支持＋字符的编码</h2>
+<p>将默认字符编码为utf-8，当字符操作的时候，就不会出现'ascii' codec can't encode characters in position 0-3: ordinal not in range(128)问题</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
 <span class="kn">import</span> <span class="nn">sys</span> 
 <span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span> 
 <span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> 
-<span class="c1">#或者：</span>
-<span class="c1">#!/usr/bin/env python</span>
-<span class="c1"># encoding: utf-8</span>
 </pre></div>
 
 
@@ -279,7 +279,7 @@ Email:biyoubiyou.tang@gmail.com</p>
 		<div class="widget">
 			<h3 class="headline">Tags</h3><span class="line"></span><div class="clearfix"></div>
 			<nav class="tags">				    <a href="/tag/python.html">python</a>
-				    <a href="/tag/test.html">test</a>
+				    <a href="/tag/re.html">re</a>
 			</nav>
 		</div>
 	</div>

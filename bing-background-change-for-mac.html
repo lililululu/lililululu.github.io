@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+	<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="author" content="Biyou~Tang">
+
+
+        <title>Biyou⊙ . ⊙ - Bing Background Change for Mac</title>
+
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="/theme/css/style.css">
+
+        <!-- Custom CSS -->
+        	<link rel="stylesheet" href="/theme/css/colors/blue.css" id="colors">
+
+        <!-- Code highlight color scheme -->
+            <link href="/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+
+        <meta name="tags" contents="python" />
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Biyou⊙ . ⊙">
+
+	<meta property="og:type" content="article">
+	<meta property="article:author" content="">
+	<meta property="og:url" content="/bing-background-change-for-mac.html">
+	<meta property="og:title" content="Bing Background Change for Mac">
+	<meta property="og:description" content="">
+	   <meta property="og:image" content="/images/guilherme-toti.jpg">
+	<meta property="article:published_time" content="2016-09-08 17:35:13+02:00">
+	</head>
+	<body>
+		<header id="header">
+			<!-- Container -->
+			<div class="container">
+				<!-- Logo / Mobile Menu -->
+				<div class="three columns">
+					<div id="logo">
+						<h1><a href="/">Biyou⊙ . ⊙</a></h1>
+					</div>
+				</div>
+				<!-- Navigation
+				================================================== -->
+				<div class="thirteen columns">
+					
+					<nav id="navigation" class="menu">
+						<ul id="responsive">
+
+							<li><a href="/">Home</a></li>
+
+
+						</ul>
+					</nav>
+				</div>
+			</div>
+			<!-- Container / End -->
+		</header>
+		<!-- Header / End -->
+		
+		<div id="content-wrapper">
+			<section id="titlebar">
+				<!-- Container -->
+				<div class="container">
+					<div class="sixteen columns">						
+						<nav id="breadcrumbs">
+							<ul>
+								<li>You are here:</li>
+								<li><a href="/">Home</a></li>
+<li><a href="/category/python">python</a></li>
+<li>Bing Background Change for Mac</li>
+							</ul>
+						</nav>
+					</div>
+
+				</div>
+				<!-- Container / End -->
+			</section>
+
+			<div class="container">
+	<div class="twelve alt columns">
+<article class="post" style="margin: 0; border: 0;">
+	
+	<div class="post-format">
+		<div class="circle"><i class="icon-pencil"></i><span></span></div>
+	</div>
+
+	<section class="post-content">
+
+		<header class="meta">
+			<h2><a href="/bing-background-change-for-mac.html">Bing Background Change for Mac</a></h2>
+			<ul>
+				<li>By <a href="/author/biyou.html">Biyou</a></li>
+				<li>四 08 九月 2016</li>
+			</ul>
+		</header>
+
+		<h2>bing api</h2>
+<ul>
+<li>http://www.bing.com/HPImageArchive.aspx?format=js&amp;idx=1&amp;n=1</li>
+<li>只能爬当前日期的15个背景图片/国外和国内的图片有靴微的不一样</li>
+<li>搓搓的懒得套多线程,没有任何的try，仅供参考</li>
+<li>save成jpg使用“wb”</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span> 
+<span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span> <span class="s2">&quot;utf-8&quot;</span> <span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">requests</span><span class="o">,</span><span class="nn">re</span>
+
+<span class="k">def</span> <span class="nf">saveImage</span><span class="p">(</span> <span class="n">imgUrl</span><span class="p">,</span><span class="n">imgName</span> <span class="o">=</span><span class="s2">&quot;default.jpg&quot;</span> <span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">imgUrl</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+    <span class="n">DstDir</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">DstDir</span><span class="o">+</span><span class="n">imgName</span> <span class="p">,</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jpg</span><span class="p">:</span>
+            <span class="n">jpg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>     
+            <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;IO Error</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;[*] Download :&quot;</span> <span class="o">+</span> <span class="n">imgName</span> 
+        <span class="n">jpg</span><span class="o">.</span><span class="n">close</span>  
+
+<span class="k">def</span> <span class="nf">geturl</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="p">:</span>
+        <span class="k">return</span> 
+    <span class="n">p_url</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;&quot;url&quot;:&quot;(.*?)&quot;&#39;</span><span class="p">)</span>
+    <span class="n">p_date</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;&quot;startdate&quot;:&quot;(.*?)&quot;&#39;</span><span class="p">)</span>
+    <span class="n">bgurl</span> <span class="o">=</span> <span class="n">p_url</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">content</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">p_date</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">content</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bgurl</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">):</span>
+        <span class="n">bgurl</span> <span class="o">=</span> <span class="s1">&#39;http://www.bing.com&#39;</span> <span class="o">+</span> <span class="n">bgurl</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;startdata&quot;</span><span class="p">:</span><span class="n">date</span> <span class="p">,</span><span class="s2">&quot;bgurl&quot;</span><span class="p">:</span><span class="n">bgurl</span><span class="p">}</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://www.bing.com/HPImageArchive.aspx?format=js&amp;idx=</span><span class="si">%s</span><span class="s2">&amp;n=1&quot;</span> <span class="o">%</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">geturl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">saveImage</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;bgurl&#39;</span><span class="p">],</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;startdata&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;.jpg&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<h2>Crontab /osascript</h2>
+<ul>
+<li>crontab 让python程序在制定时间运行。</li>
+<li>crontab 格式：分 时 日 月 星期 要运行的命令</li>
+</ul>
+<div class="highlight"><pre><span></span>crontab -e 
+00 11 * * * python /Users/change_bg.py &gt;&gt; /Users/change_bg.log 2&gt;&amp;1 # 11:00
+* */1 * * * /usr/local/apache/bin/apachectl restart #每小时
+</pre></div>
+
+
+<ul>
+<li>使用osascript 来改变mac背景</li>
+<li>tell application "Finder" set desktop picture to POSIX file "%s"</li>
+<li>必须是绝对路径，不然会报错错</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1">#osascript -e &#39;tell application &quot;Finder&quot; to set desktop picture to POSIX file &quot;/Library/Desktop Pictures/Earth Horizon.jpg&quot;&#39;</span>
+<span class="c1">#http://www.bing.com/HPImageArchive.aspx?format=js&amp;idx=0&amp;n=1</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Change bg everyday~</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span> 
+<span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span> <span class="s2">&quot;utf-8&quot;</span> <span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">requests</span><span class="o">,</span><span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="n">SCRIPT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;/usr/bin/osascript&lt;&lt;END</span>
+<span class="s2">tell application &quot;Finder&quot;</span>
+<span class="s2">set desktop picture to POSIX file &quot;</span><span class="si">%s</span><span class="s2">&quot;</span>
+<span class="s2">end tell</span>
+<span class="s2">END&quot;&quot;&quot;</span>
+
+<span class="k">def</span> <span class="nf">saveImage</span><span class="p">(</span> <span class="n">imgUrl</span><span class="p">,</span><span class="n">imgName</span> <span class="o">=</span><span class="s2">&quot;today.jpg&quot;</span> <span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">imgUrl</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+    <span class="n">DstDir</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">DstDir</span><span class="o">+</span><span class="n">imgName</span> <span class="p">,</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jpg</span><span class="p">:</span>
+            <span class="n">jpg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="n">image</span><span class="p">)</span>    
+
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;IO Error</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;[*] Download :&quot;</span> <span class="o">+</span> <span class="n">imgName</span> 
+        <span class="n">jpg</span><span class="o">.</span><span class="n">close</span>  
+    <span class="c1">#save also as today.jpg</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;today.jpg&quot;</span> <span class="p">,</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jpg</span><span class="p">:</span>
+            <span class="n">jpg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="n">image</span><span class="p">)</span>    
+            <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;IO Error</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;[*] Download :&quot;</span> <span class="o">+</span> <span class="s2">&quot;today.jpg&quot;</span>
+        <span class="n">jpg</span><span class="o">.</span><span class="n">close</span>  
+
+<span class="k">def</span> <span class="nf">geturl</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="p">:</span>
+        <span class="k">return</span> 
+    <span class="n">p_url</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;&quot;url&quot;:&quot;(.*?)&quot;&#39;</span><span class="p">)</span>
+    <span class="n">p_date</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">r&#39;&quot;startdate&quot;:&quot;(.*?)&quot;&#39;</span><span class="p">)</span>
+    <span class="n">bgurl</span> <span class="o">=</span> <span class="n">p_url</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">content</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">p_date</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">content</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bgurl</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">):</span>
+        <span class="n">bgurl</span> <span class="o">=</span> <span class="s1">&#39;http://www.bing.com&#39;</span> <span class="o">+</span> <span class="n">bgurl</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;startdata&quot;</span><span class="p">:</span><span class="n">date</span> <span class="p">,</span><span class="s2">&quot;bgurl&quot;</span><span class="p">:</span><span class="n">bgurl</span><span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">set_desktop_background</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">SCRIPT</span><span class="o">%</span><span class="n">filename</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://www.bing.com/HPImageArchive.aspx?format=js&amp;idx=0&amp;n=1&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">geturl</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span> <span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Connect Error&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">saveImage</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;bgurl&#39;</span><span class="p">],</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;startdata&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;.jpg&#39;</span><span class="p">)</span>
+        <span class="n">set_desktop_background</span><span class="p">(</span><span class="s1">&#39;/Users/today.jpg&#39;</span><span class="p">)</span>
+</pre></div>
+
+		    <div class="tags">
+		        <p>tags: <a href="/tag/python.html">python</a></p>
+		    </div>
+
+<div class="sharing">
+</div>
+<hr>
+		
+	</section>
+	<div class="clearfix"></div>
+
+</article>
+
+	</div>
+
+	<!-- Sidebar -->
+	<div class="four columns">
+		<!-- About  -->
+		<div class="widget no-mg-top">
+			<h3 class="headline">About</h3><span class="line"></span><div class="clearfix"></div>
+			<p>Biyou Biyou Biyou ~~~
+Have fun~~~
+Email:biyoubiyou.tang@gmail.com</p>
+		</div>
+
+		<!-- Categories -->
+		<div class="widget">
+			<h3 class="headline">Categories</h3><span class="line"></span><div class="clearfix"></div>
+			<nav class="categories">
+				<ul>
+					    <li><a href="/category/misc.html">misc</a></li>
+					    <li class="active"><a href="/category/python.html">python</a></li>
+					    <li><a href="/category/test.html">test</a></li>
+				</ul>
+			</nav>
+		</div>
+		
+		<!-- Tags -->
+		<div class="widget">
+			<h3 class="headline">Tags</h3><span class="line"></span><div class="clearfix"></div>
+			<nav class="tags">				    <a href="/tag/python.html">python</a>
+				    <a href="/tag/re.html">re</a>
+			</nav>
+		</div>
+	</div>
+			</div>
+			<!-- Container / End -->
+		</div>
+		<!-- Content Wrapper / End -->
+
+
+		<div id="footer-bottom">
+			<!-- Container -->
+			<div class="container">
+				<div class="eight columns">Blog powered by <a href="http://getpelican.com">Pelican</a></div>
+					<div class="eight columns">
+						<ul class="social-icons-footer">
+								<li>
+									<a href="#" class="tooltip top" title="You can add links in your config file">
+										<i class="icon-you can add links in your config file"></i>
+									</a>
+								</li>
+								<li>
+									<a href="#" class="tooltip top" title="Another social link">
+										<i class="icon-another social link"></i>
+									</a>
+								</li>
+							<li><a href="/None" class="tooltip top" title="RSS"><i class="icon-rss"></i></a></li>
+						</ul>
+					</div>
+			</div>
+			<!-- Container / End -->
+		</div>
+		<!-- Footer Bottom / End -->
+		
+	<!-- Javascripts -->
+	<script src="/theme/js/jquery.min.js"></script>
+	</body>
+</html>
